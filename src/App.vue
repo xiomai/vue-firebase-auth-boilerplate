@@ -1,28 +1,51 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <nav-bar v-if="authUser"></nav-bar>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { mapState } from "vuex";
+import { firebase } from "./config/firebase";
+import router from "./config/router";
+import store from "./containers/store";
+import NavBar from "./components/navigation";
+import "./assets/bootstrap.min.css";
 
 export default {
-  name: 'app',
+  store,
+  router,
+  name: "app",
+  computed: mapState(["authUser"]),
   components: {
-    HelloWorld
+    NavBar
+  },
+  created: function() {
+    firebase.auth.onAuthStateChanged(authUser => {
+      if (!authUser) {
+        store.dispatch("logout");
+        router.replace({ name: "login" });
+        return;
+      }
+
+      store.dispatch("login", { user: authUser });
+      router.replace({ name: "home" });
+    });
   }
-}
+};
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+
+.app-main-logo {
+  max-width: 200px;
 }
 </style>
