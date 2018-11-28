@@ -1,4 +1,4 @@
-# library_system
+# Vue + Firebase Boilerplate
 
 ## Project setup
 ```

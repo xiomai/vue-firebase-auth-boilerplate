@@ -23,7 +23,7 @@
                         v-model="email"
                         @keyup.enter="login"
                       >
-                      <div class="input-group-append">
+                      <div class="input-group-append" v-if="emailDomain">
                         <span class="input-group-text">{{ emailDomain }}</span>
                       </div>
                     </div>
@@ -74,7 +74,10 @@ export default {
   },
   methods: {
     async login() {
-      const email = this.email + "@micronet.com.bn";
+      const email = !process.env.VUE_APP_EMAIL_DOMAIN
+        ? this.email
+        : this.email + process.env.VUE_APP_EMAIL_DOMAIN;
+
       try {
         const authUser = await auth.doSignInWithEmailAndPassword(
           email,
