@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <nav-bar v-if="authUser"></nav-bar>
-    <router-view></router-view>
+    <div class="container">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -22,16 +24,9 @@ export default {
     NavBar
   },
   created: function() {
-    firebase.auth.onAuthStateChanged(authUser => {
-      if (!authUser) {
-        store.dispatch("logout");
-        router.replace({ name: "login" });
-        return;
-      }
-
-      store.dispatch("login", { user: authUser });
-      router.replace({ name: "home" });
-    });
+    const authUser = firebase.auth.currentUser;
+    store.dispatch("login", { user: authUser });
+    router.replace({ name: "home" });
   }
 };
 </script>
@@ -41,7 +36,6 @@ export default {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 

@@ -1,7 +1,6 @@
 <template>
   <div class="row">
-    <PageContenHeader pageTitle="Books Page"/>
-    <router-view></router-view>
+    <PageContenHeader pageTitle="404: Page Not Found"/>
   </div>
 </template>
 
@@ -9,7 +8,6 @@
 import PageContenHeader from "../PageContentHeader";
 
 export default {
-  name: "Books",
   components: {
     PageContenHeader
   }
@@ -18,18 +16,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+.app-main-logo {
+  max-width: 100px;
 }
 </style>

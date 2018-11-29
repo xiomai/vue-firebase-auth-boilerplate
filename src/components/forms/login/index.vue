@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col col-sm-12">
+      <div class="col col-sm-12 text-center">
         <img alt="Vue logo" class="app-main-logo" src="../../../assets/logo.png">
       </div>
       <div class="col col-sm-12">
@@ -9,7 +9,7 @@
           <div class="card border-primary mt-3" style="max-width: 40rem;">
             <div class="card-header">{{appName}}</div>
             <div class="card-body">
-              <form>
+              <form class="text-center">
                 <fieldset>
                   <div class="form-group">
                     <label for="email">Email address</label>

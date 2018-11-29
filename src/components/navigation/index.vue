@@ -1,6 +1,8 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="#">{{ appShortName }}</a>
+  <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+    <router-link tag="li" :to="{name: 'home'}">
+      <a class="navbar-brand" href="#">{{ appShortName }}</a>
+    </router-link>
     <button
       class="navbar-toggler"
       type="button"
@@ -16,17 +18,26 @@
     <div class="collapse navbar-collapse" id="navbarColor01">
       <ul class="navbar-nav mr-auto">
         <router-link tag="li" :to="{name: 'home'}">
-          <a class="nav-link">Home</a>
-        </router-link>
-        <router-link tag="li" :to="{name: 'manage.books'}">
-          <a class="nav-link">Students</a>
+          <a class="nav-link">
+            <i class="fas fa-home"></i>
+          </a>
         </router-link>
         <router-link tag="li" :to="{name: 'manage.students'}">
           <a class="nav-link">Books</a>
         </router-link>
+        <router-link tag="li" :to="{name: 'manage.books'}">
+          <a class="nav-link">Students</a>
+        </router-link>
       </ul>
       <form class="form-inline my-2 my-lg-0">
-        <button class="btn btn-secondary my-2 my-sm-0" type="submit" @click.prevent="logout">Logout</button>
+        <router-link :to="{ name: 'manage.account' }">
+          <button class="btn btn-secondary my-2 my-sm-0">
+            <i class="fas fa-user"></i> Account
+          </button>
+        </router-link>
+        <button class="btn btn-secondary my-2 my-sm-0 ml-3" type="submit" @click.prevent="logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
       </form>
     </div>
   </nav>
@@ -43,8 +54,14 @@ export default {
     }
   },
   methods: {
-    logout() {
-      firebase.auth.signOut();
+    async logout() {
+      try {
+        await firebase.auth.signOut();
+        this.$store.dispatch("logout");
+        this.$router.replace("/login");
+      } catch (error) {
+        alert(error.message);
+      }
     }
   }
 };

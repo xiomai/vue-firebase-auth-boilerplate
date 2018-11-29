@@ -1,13 +1,17 @@
 <template>
-  <div class="hello">
-    <img alt="Vue logo" class="app-main-logo" src="../../assets/logo.png">
-    <h1>Manage Students Page</h1>
+  <div class="row">
+    <PageContenHeader pageTitle="Students Page"/>
   </div>
 </template>
 
 <script>
+import PageContenHeader from "../PageContentHeader";
+
 export default {
-  name: "Students"
+  name: "Students",
+  components: {
+    PageContenHeader
+  }
 };
 </script>
 

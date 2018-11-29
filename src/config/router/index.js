@@ -1,10 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from "../../components/views/Home"
-import Books from "../../components/views/Books"
-import Students from "../../components/views/Students"
-import SignIn from "../../components/views/Login"
-import Logout from "../../components/views/Logout"
+import { 
+  Home, 
+  Books, 
+  Students, 
+  Account, 
+  SignIn, 
+  Logout, 
+PageNotFound,
+} from "../../components/views"
 import store from "../../containers/store"
 
 Vue.use(Router)
@@ -18,11 +22,11 @@ const router = new Router({
       name: 'home',
       component: Home,
       meta: {
-        authRequired: true
+        authRequired: true 
       }
     },
     {
-      path: '/manage/books',
+      path: 'books',
       name: 'manage.books',
       component: Books,
       meta: {
@@ -30,7 +34,7 @@ const router = new Router({
       }
     },
     {
-      path: '/manage/students',
+      path: 'students',
       name: 'manage.students',
       component: Students,
       meta: {
@@ -38,23 +42,27 @@ const router = new Router({
       }
     },
     {
+      path: 'account',
+      name: 'manage.account',
+      component: Account,
+      meta: {
+        authRequired: true
+      }
+    },
+    {
       path: '/login',
       name: 'login',
-      component: SignIn
+      component: SignIn,
+      meta: {
+        guestRequired: true
+      }
     },
     {
       path: '/logout',
       name: 'logout',
       component: Logout
     },
-    /* {
-      path: '/profile',
-      name: 'profile',
-      component: Profile,
-      meta: {
-        authRequired: true
-      }
-    } */
+    { path: "*", component: PageNotFound }
   ]
 })
 
@@ -62,13 +70,20 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.authRequired)) {
     if (!store.state.authUser) {
       next({
-        path: '/login',
-        query: { redirect: to.fullPath }
+        name: 'login',
       })
     } else {
       next()
     }
-  } else {
+  } else if (to.matched.some(record => record.meta.requiresGuest)) {
+    if (store.state.authUser) {
+      next({
+        name: 'home',
+      });
+    } else {
+      next();
+    }
+  }  else {
     next()
   }
 })
