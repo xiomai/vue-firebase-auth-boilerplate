@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav-bar v-if="authUser"></nav-bar>
+    <nav-bar v-if="authenticated"></nav-bar>
     <div class="container">
       <router-view></router-view>
     </div>
@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 import { firebase } from "./config/firebase";
 import router from "./config/router";
 import store from "./containers/store";
@@ -19,14 +19,18 @@ export default {
   store,
   router,
   name: "app",
-  computed: mapState(["authUser"]),
+  computed: mapGetters(["authenticated"]),
   components: {
     NavBar
   },
   created: function() {
-    const authUser = firebase.auth.currentUser;
-    store.dispatch("login", { user: authUser });
-    router.replace({ name: "home" });
+    firebase.auth.onAuthStateChanged(function(authUser) {
+      store.dispatch("login", { user: authUser });
+      if (authUser && authUser.uid) {
+        store.dispatch("fetchRole", authUser.uid);
+        router.replace({ name: "home" });
+      }
+    });
   }
 };
 </script>

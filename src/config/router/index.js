@@ -1,91 +1,68 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import { 
-  Home, 
-  Books, 
-  Students, 
-  Account, 
-  SignIn, 
-  Logout, 
-PageNotFound,
+import {
+  Home,
+  Books,
+  Students,
+  Account,
+  SignIn,
+  Logout,
+  ManageUsers,
+  PageNotFound,
 } from "../../components/views"
-import store from "../../containers/store"
+import Middleware from "../middleware"
 
 Vue.use(Router)
 
 const router = new Router({
   mode: 'history',
   linkExactActiveClass: 'active',
-  routes: [
-    {
+  routes: [{
       path: '/',
       name: 'home',
       component: Home,
-      meta: {
-        authRequired: true 
-      }
+      beforeEnter: Middleware.authenticated
     },
     {
-      path: 'books',
+      path: '/manage/books',
       name: 'manage.books',
       component: Books,
-      meta: {
-        authRequired: true
-      }
+      beforeEnter: Middleware.authenticated
     },
     {
-      path: 'students',
+      path: '/manage/students',
       name: 'manage.students',
       component: Students,
-      meta: {
-        authRequired: true
-      }
+      beforeEnter: Middleware.authenticated
+    },
+    {
+      path: '/manage/users',
+      name: 'manage.users',
+      component: ManageUsers,
+      beforeEnter: Middleware.superadmin
     },
     {
       path: 'account',
       name: 'manage.account',
       component: Account,
-      meta: {
-        authRequired: true
-      }
+      beforeEnter: Middleware.authenticated
     },
     {
       path: '/login',
       name: 'login',
       component: SignIn,
-      meta: {
-        guestRequired: true
-      }
+      beforeEnter: Middleware.guest
     },
     {
       path: '/logout',
       name: 'logout',
       component: Logout
     },
-    { path: "*", component: PageNotFound }
+    {
+      path: "*",
+      component: PageNotFound
+    }
   ]
-})
-
-router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.authRequired)) {
-    if (!store.state.authUser) {
-      next({
-        name: 'login',
-      })
-    } else {
-      next()
-    }
-  } else if (to.matched.some(record => record.meta.requiresGuest)) {
-    if (store.state.authUser) {
-      next({
-        name: 'home',
-      });
-    } else {
-      next();
-    }
-  }  else {
-    next()
-  }
 })
 
 export default router

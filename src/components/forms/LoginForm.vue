@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col col-sm-12 text-center">
-        <img alt="Vue logo" class="app-main-logo" src="../../../assets/logo.png">
+        <img alt="Vue logo" class="app-main-logo" src="../../assets/logo.png">
       </div>
       <div class="col col-sm-12">
         <div class="d-flex justify-content-center m-3">
@@ -52,19 +52,18 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import { auth } from "../../../config/firebase";
+import { auth } from "../../config/firebase";
 
 export default {
   name: "LoginForm",
   data: function() {
     return {
       email: "",
-      password: ""
+      password: "",
+      loginError: ""
     };
   },
   computed: {
-    ...mapState(["loginError"]),
     emailDomain: function() {
       return process.env.VUE_APP_EMAIL_DOMAIN;
     },
@@ -74,21 +73,21 @@ export default {
   },
   methods: {
     async login() {
+      this.loginError = "";
       const email = !process.env.VUE_APP_EMAIL_DOMAIN
         ? this.email
         : this.email + process.env.VUE_APP_EMAIL_DOMAIN;
 
       try {
-        const authUser = await auth.doSignInWithEmailAndPassword(
-          email,
-          this.password
-        );
-        this.$store.dispatch("login", authUser);
+        await auth.doSignInWithEmailAndPassword(email, this.password);
         this.$router.replace("/");
       } catch (error) {
         /* eslint-disable-next-line */
-        console.log(error);
-        this.$store.dispatch("loginError");
+        console.log(error.message);
+        this.loginError = `!Login Error! ${error.code}`;
+        setTimeout(() => {
+          this.loginError = "";
+        }, 2000);
       }
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <div class="m-auto text-center pageContentHeader">
+  <div class="m-auto text-center">
     <img alt="Vue logo" class="app-main-logo" src="../assets/logo.png">
     <h1>{{pageTitle}}</h1>
   </div>
@@ -14,9 +14,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.pageContentHeader {
-  min-width: 30rem;
-}
 .app-main-logo {
   max-width: 100px;
 }

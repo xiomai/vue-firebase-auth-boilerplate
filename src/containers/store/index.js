@@ -1,44 +1,28 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import * as auth from './auth'
+import * as users from './users'
 
 Vue.use(Vuex)
 
 const state = {
-  authUser: null,
-  loginError: '',
+  ...auth.state,
+  ...users.state,
 }
 
 const mutations = {
-  setAuthUser(state, payload) {
-    state.authUser = payload.user
-  },
-  loginError(state) {
-    state.loginError = 'Login error'
-  },
-  clearLoginError(state) {
-    state.loginError = ''
-  },
-  logout(state) {
-    state.authUser = null
-  }
+  ...auth.mutations,
+  ...users.mutations,
 }
 
 const actions = {
-  login ({commit}, authUser) {
-    commit('clearLoginError')
-    commit('setAuthUser', authUser)
-  },
-  loginError ({commit}) {
-    commit('loginError')
-    setTimeout(function() {commit('clearLoginError')}, 2000)
-  },
-  logout ({commit}) {
-    commit('logout')
-  }
+  ...auth.actions,
+  ...users.actions,
 }
 
 const getters = {
-  authUser: state => state.authUser
+  ...auth.getters,
+  ...users.getters,
 }
 
 const store = new Vuex.Store({

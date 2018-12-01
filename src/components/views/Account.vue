@@ -9,6 +9,7 @@
             <p>
               <strong>Email Address:</strong>
               {{ authUser.email}}
+              <span class="badge badge-info">[{{authRole}}]</span>
             </p>
           </div>
         </div>
@@ -21,13 +22,13 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 import PasswordUpdateForm from "../forms/PasswordUpdate";
 import PageContenHeader from "../PageContentHeader";
 
 export default {
   name: "Account",
-  computed: mapState(["authUser"]),
+  computed: mapGetters(["authUser", "authRole"]),
   components: {
     PasswordUpdateForm,
     PageContenHeader
