@@ -9,6 +9,7 @@
           class="list-group-item list-group-item-action"
           v-for="(value, key) in users"
           :key="key"
+          @click.prevent="enableEditMode(key)"
         >
           {{value.name}}
           <span class="badge badge-success badge-pill">{{value.email}}</span>
@@ -33,7 +34,7 @@
                 <img src="../../assets/firebase_create_then_uid.png" class="img-fluid">
               </a>
             </div>
-            <AssignAdminRoleForm/>
+            <AssignAdminRoleForm :editUserId="editUserId" @cancel-edit-mode="disableEditMode"/>
           </div>
         </div>
       </div>
@@ -43,12 +44,19 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { isEmpty } from "lodash";
 import AssignAdminRoleForm from "../forms/AssignAdminRoleForm";
 import PageContenHeader from "../PageContentHeader";
 import { users } from "../../config/firebase";
+import EventBus from "../../config/EventBus";
 
 export default {
   name: "ManageUsers",
+  data() {
+    return {
+      editUserId: ""
+    };
+  },
   components: {
     PageContenHeader,
     AssignAdminRoleForm
@@ -66,10 +74,17 @@ export default {
     }
   },
   methods: {
+    enableEditMode(user_id) {
+      this.editUserId = user_id;
+      EventBus.$emit("edit-mode-enabled", user_id);
+    },
+    disableEditMode() {
+      this.editUserId = "";
+    },
     async fetchUsers() {
       try {
         const snapshot = await users.onceGetUsers();
-        const usersPayload = snapshot.val() || null;
+        const usersPayload = isEmpty(snapshot.val()) ? null : snapshot.val();
 
         this.$store.dispatch("setUsers", usersPayload);
       } catch (error) {
@@ -83,6 +98,11 @@ export default {
   },
   beforeDestroy() {
     this.$store.commit("clearUsers");
+  },
+  mounted() {
+    EventBus.$on("cancel-edit-mode", () => {
+      this.disableEditMode();
+    });
   }
 };
 </script>

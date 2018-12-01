@@ -6,7 +6,7 @@ const state = {
 
 const mutations = {
   setUsers(state, payload) {
-    state.users = {...state.users, ...payload}
+    state.users = payload
   },
   clearUsers(state) {
     state.users = null

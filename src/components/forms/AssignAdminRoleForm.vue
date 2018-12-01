@@ -1,5 +1,5 @@
 <template>
-  <form class="text-center" @submit.prevent="validateBeforeSubmit()">
+  <form class="text-center" @submit.prevent="validateBeforeSubmit">
     <fieldset>
       <div class="form-group">
         <label for="email">Firebase User UID</label>
@@ -13,6 +13,7 @@
             v-model="uid"
             v-validate="'required'"
             @keyup.enter="validateBeforeSubmit"
+            :readonly="confirmDelete"
           >
         </div>
       </div>
@@ -28,6 +29,7 @@
             v-model="fullname"
             v-validate="'required|alpha_spaces'"
             @keyup.enter="validateBeforeSubmit"
+            :readonly="confirmDelete"
           >
         </div>
       </div>
@@ -43,6 +45,7 @@
             placeholder="Enter email"
             v-model="email"
             v-validate="{required: true, alpha_dash: !!emailDomain, email: !emailDomain}"
+            :readonly="confirmDelete"
           >
           <div class="input-group-append" v-if="emailDomain">
             <span class="input-group-text">{{ emailDomain }}</span>
@@ -56,17 +59,50 @@
         <div v-if="errors.has('custom_errors')">{{ errors.first('custom_errors') }}</div>
       </div>
       <div class="alert alert-success mb-3" v-show="success">
-        <p>Administrator successfully added.</p>
+        <p>Administrator successfully {{!editUserId ? 'added' : 'updated'}}.</p>
       </div>
-      <button type="submit" class="btn btn-primary">Assign Administrator</button>
+      <button type="submit" class="btn btn-primary" v-if="!editUserId">Assign Administrator</button>
+      <button
+        type="submit"
+        class="btn btn-primary ml-2"
+        v-if="!!editUserId"
+        @click.prevent="assignUidAsAdmin"
+      >Update</button>
+      <button
+        type="button"
+        class="btn btn-danger ml-2"
+        v-if="!!editUserId"
+        :disabled="confirmDelete"
+        @click="confirmDeleteButtons"
+      >
+        <i class="fas fa-trash"></i> Delete
+      </button>
+      <button
+        type="button"
+        class="btn btn-seondary ml-2"
+        v-if="!!editUserId"
+        @click="cancelEditMode"
+      >
+        <i class="fas fa-times-circle"></i> Cancel
+      </button>
+      <div class="alert alert-danger mt-2" v-if="confirmDelete">
+        <button type="button" class="btn btn-danger ml-2" @click="deleteUser">
+          <i class="fas fa-trash"></i> Confirm
+        </button>
+        <button type="button" class="btn btn-seondary ml-2" @click="cancelDeleteButtons">
+          <i class="fas fa-times-circle"></i> Cancel
+        </button>
+      </div>
     </fieldset>
   </form>
 </template>
 
 <script>
 import Vue from "vue";
+import { mapGetters } from "vuex";
 import VeeValidate from "vee-validate";
 import { users } from "../../config/firebase";
+import EventBus from "../../config/EventBus";
 
 Vue.use(VeeValidate, {
   events: ""
@@ -79,10 +115,18 @@ export default {
       uid: "",
       fullname: "",
       email: "",
-      success: false
+      success: false,
+      confirmDelete: false
     };
   },
+  props: {
+    editUserId: {
+      type: String,
+      default: ""
+    }
+  },
   computed: {
+    ...mapGetters(["users"]),
     emailDomain: function() {
       return process.env.VUE_APP_EMAIL_DOMAIN;
     }
@@ -92,22 +136,65 @@ export default {
       this.uid = "";
       this.fullname = "";
       this.email = "";
-      this.success = false;
+      this.confirmDelete = false;
+      this.$validator.reset();
+    },
+    setFormEditData(user_id) {
+      const user = this.users[user_id];
+      this.uid = user_id;
+      this.fullname = user.name;
+      this.email = user.email;
+    },
+    confirmDeleteButtons() {
+      this.confirmDelete = true;
+    },
+    cancelDeleteButtons() {
+      this.confirmDelete = false;
+    },
+    cancelEditMode() {
+      this.clear();
+      EventBus.$emit("cancel-edit-mode");
     },
     async assignUidAsAdmin() {
       try {
-        this.success = true;
         const email = !process.env.VUE_APP_EMAIL_DOMAIN
           ? this.email
           : this.email + process.env.VUE_APP_EMAIL_DOMAIN;
 
         await users.addUserThenAssignAsAdmin(this.uid, this.fullname, email);
+        this.success = true;
+        EventBus.$emit("cancel-edit-mode");
+        this.clear();
+
         const snapshot = await users.onceGetUsers();
 
         this.$store.dispatch("setUsers", snapshot.val());
-        setTimeout(() => this.clear(), 2000);
+        setTimeout(() => (this.success = false), 2000);
       } catch (error) {
-        if (error.code) {
+        if (error) {
+          this.$validator.errors.add({
+            field: "custom_errors",
+            msg: error.message
+          });
+        }
+
+        /* eslint-disable-next-line*/
+        console.log(error.code, error.message);
+      }
+    },
+    async deleteUser() {
+      try {
+        await users.deleteUserAndRole(this.uid);
+        EventBus.$emit("cancel-edit-mode");
+        this.success = true;
+        this.clear();
+
+        const snapshot = await users.onceGetUsers();
+
+        this.$store.dispatch("setUsers", snapshot.val());
+        setTimeout(() => (this.success = false), 2000);
+      } catch (error) {
+        if (error) {
           this.$validator.errors.add({
             field: "custom_errors",
             msg: error.message
@@ -129,6 +216,12 @@ export default {
         console.log(error);
       }
     }
+  },
+  mounted() {
+    EventBus.$on("edit-mode-enabled", user_id => {
+      this.clear();
+      this.setFormEditData(user_id);
+    });
   }
 };
 </script>
