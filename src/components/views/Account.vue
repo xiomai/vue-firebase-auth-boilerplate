@@ -9,7 +9,10 @@
             <p>
               <strong>Email Address:</strong>
               {{ authUser.email}}
-              <span class="badge badge-info">[{{authRole}}]</span>
+              <span
+                class="badge badge-info"
+                v-show="!!authRole"
+              >[{{authRole}}]</span>
             </p>
           </div>
         </div>

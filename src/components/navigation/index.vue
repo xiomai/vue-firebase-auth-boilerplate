@@ -23,10 +23,10 @@
             <i class="fas fa-home"></i>
           </a>
         </router-link>
-        <router-link tag="li" :to="{name: 'manage.books'}">
+        <router-link tag="li" :to="{name: 'manage.books'}" v-if="isAdmin">
           <a class="nav-link">Books</a>
         </router-link>
-        <router-link tag="li" :to="{name: 'manage.students'}">
+        <router-link tag="li" :to="{name: 'manage.students'}" v-if="isAdmin">
           <a class="nav-link">Students</a>
         </router-link>
       </ul>
@@ -62,7 +62,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      isSuperadmin: "authIsSuperAdmin"
+      isSuperadmin: "authIsSuperAdmin",
+      isAdmin: "authIsAdmin",
     }),
     appShortName: function() {
       return process.env.VUE_APP_SHORT_NAME;

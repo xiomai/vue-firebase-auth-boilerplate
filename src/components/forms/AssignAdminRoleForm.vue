@@ -66,6 +66,7 @@
         type="submit"
         class="btn btn-primary ml-2"
         v-if="!!editUserId"
+        :disabled="confirmDelete"
         @click.prevent="assignUidAsAdmin"
       >Update</button>
       <button

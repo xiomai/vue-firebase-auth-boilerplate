@@ -26,13 +26,13 @@ const router = new Router({
       path: '/manage/books',
       name: 'manage.books',
       component: Books,
-      beforeEnter: Middleware.authenticated
+      beforeEnter: Middleware.siteAdmin
     },
     {
       path: '/manage/students',
       name: 'manage.students',
       component: Students,
-      beforeEnter: Middleware.authenticated
+      beforeEnter: Middleware.siteAdmin
     },
     {
       path: '/manage/users',
