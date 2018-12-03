@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import PageContenHeader from "../PageContentHeader";
+import PageContenHeader from "@/components/PageContentHeader";
 
 export default {
   name: "Students",

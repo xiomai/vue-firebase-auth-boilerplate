@@ -101,8 +101,8 @@
 import Vue from "vue";
 import { mapGetters } from "vuex";
 import VeeValidate from "vee-validate";
-import { users } from "../../config/firebase";
-import EventBus from "../../config/EventBus";
+import { users } from "@/config/firebase";
+import EventBus from "@/config/EventBus";
 
 Vue.use(VeeValidate, {
   events: ""

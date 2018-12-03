@@ -23,8 +23,8 @@
 
 <script>
 import { mapGetters } from "vuex";
-import PasswordUpdateForm from "../forms/PasswordUpdate";
-import PageContenHeader from "../PageContentHeader";
+import PasswordUpdateForm from "@/components/forms/PasswordUpdate";
+import PageContenHeader from "@/components/PageContentHeader";
 
 export default {
   name: "Account",

@@ -5,7 +5,8 @@
 </template>
 
 <script>
-import LoginForm from "../forms/LoginForm";
+import LoginForm from "@/components/forms/LoginForm";
+
 export default {
   name: "LoginPage",
   components: {

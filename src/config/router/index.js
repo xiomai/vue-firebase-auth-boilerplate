@@ -1,16 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import {
-  Home,
-  Books,
-  Students,
-  Account,
-  SignIn,
-  Logout,
-  ManageUsers,
-  PageNotFound,
-} from "../../components/views"
-import Middleware from "../middleware"
+import Middleware from "@/config/middleware"
+
+const PageNotFound = () => import(/* webpackChunkName: "public-routes" */ '@/components/views/PageNotFound.vue')
+const Logout = () => import(/* webpackChunkName: "public-routes" */ '@/components/views/Logout')
+const Login = () => import(/* webpackChunkName: "public-routes" */ '@/components/views/Login')
+const Home = () => import(/* webpackChunkName: "authenticated-routes" */ '@/components/views/Home')
+const Books = () => import(/* webpackChunkName: "authenticated-routes" */ '@/components/views/Books')
+const Students = () => import(/* webpackChunkName: "authenticated-routes" */ '@/components/views/Students')
+const Account = () => import(/* webpackChunkName: "authenticated-routes" */ '@/components/views/Account')
+const ManageUsers = () => import(/* webpackChunkName: "superadmin-routes" */ '@/components/views/ManageUsers')
 
 Vue.use(Router)
 
@@ -50,7 +49,7 @@ const router = new Router({
     {
       path: '/login',
       name: 'login',
-      component: SignIn,
+      component: Login,
       beforeEnter: Middleware.guest
     },
     {

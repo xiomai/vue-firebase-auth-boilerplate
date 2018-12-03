@@ -2,7 +2,7 @@
   <div>Logged out</div>
 </template>
 <script>
-import { auth } from "../../config/firebase";
+import { auth } from "@/config/firebase";
 
 export default {
   async mounted() {

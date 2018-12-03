@@ -1,6 +1,6 @@
 import {
   onceGetRole
-} from "../../../config/firebase/models/roles"
+} from "@/config/firebase/models/roles"
 
 export default {
   login({

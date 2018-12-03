@@ -43,7 +43,7 @@
 <script>
 import Vue from "vue";
 import VeeValidate from "vee-validate";
-import { auth } from "../../config/firebase";
+import { auth } from "@/config/firebase";
 
 Vue.use(VeeValidate, {
   events: ""

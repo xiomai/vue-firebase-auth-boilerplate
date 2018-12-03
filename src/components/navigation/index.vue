@@ -51,7 +51,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { firebase } from "../../config/firebase";
+import { firebase } from "@/config/firebase";
 
 export default {
   name: "NavBar",

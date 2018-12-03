@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { auth } from "../../config/firebase";
+import { auth } from "@/config/firebase";
 
 export default {
   name: "LoginForm",

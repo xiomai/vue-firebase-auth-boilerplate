@@ -1,4 +1,4 @@
-import store from "../../containers/store"
+import store from "@/containers/store"
 
 export default {
   authenticated(to, from, next) {

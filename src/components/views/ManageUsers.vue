@@ -45,10 +45,10 @@
 <script>
 import { mapGetters } from "vuex";
 import { isEmpty } from "lodash";
-import AssignAdminRoleForm from "../forms/AssignAdminRoleForm";
-import PageContenHeader from "../PageContentHeader";
-import { users } from "../../config/firebase";
-import EventBus from "../../config/EventBus";
+import AssignAdminRoleForm from "@/components/forms/AssignAdminRoleForm";
+import PageContenHeader from "@/components/PageContentHeader";
+import { users } from "@/config/firebase";
+import EventBus from "@/config/EventBus";
 
 export default {
   name: "ManageUsers",
