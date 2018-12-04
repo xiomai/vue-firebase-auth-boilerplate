@@ -1,0 +1,41 @@
+{
+  "rules": {
+    "roles": {
+      ".write": "auth != null && data.child(auth.uid).exists() && data.child(auth.uid).val() == 'superadmin'",
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": false
+      }
+    },
+    "users": {
+      // Only a superadmin can assign a user to a role
+      ".write": "auth != null && root.child('roles').child(auth.uid).exists() && root.child('roles').child(auth.uid).val() == 'superadmin'",
+      ".read": "auth != null && root.child('roles').child(auth.uid).exists() && (root.child('roles').child(auth.uid).val() == 'superadmin' || root.child('roles').child(auth.uid).val() == 'admin')",
+      "$uid": {
+        ".validate": "newData.hasChildren(['name', 'email']) && newData.child('name').isString() && newData.child('email').isString()"
+      }
+    },
+    "books": {
+      ".read": "auth != null && root.child('roles').child(auth.uid).exists() && (root.child('roles').child(auth.uid).val() == 'superadmin' || root.child('roles').child(auth.uid).val() == 'admin')",
+      "$isbn": {
+        ".write": "auth != null && !data.exists() && root.child('roles').child(auth.uid).exists() && (root.child('roles').child(auth.uid).val() == 'superadmin' || root.child('roles').child(auth.uid).val() == 'admin')",
+        ".validate": "newData.hasChildren(['title', 'publisher', 'author', 'added_at'])",
+        "title": {
+          ".validate": "newData.isString()"
+        },
+        "publisher": {
+          ".validate": "newData.isString()"
+        },
+        "author": {
+          ".validate": "newData.isString()"
+        },
+        "added_at": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  }
+}
