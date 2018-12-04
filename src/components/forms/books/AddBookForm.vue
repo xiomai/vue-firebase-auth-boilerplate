@@ -40,8 +40,13 @@
       <div v-if="errors.has('bookTitle')">{{ errors.first('bookTitle') }}</div>
       <div v-if="errors.has('custom_errors')">{{ errors.first('custom_errors') }}</div>
     </div>
-    <button type="submit" class="btn btn-primary">Save Book</button>
-    <button type="button" class="btn btn-primary ml-2">Clear</button>
+    <div class="d-flex justify-content-between col-sm-12">
+      <button type="submit" class="btn btn-primary">Save Book</button>
+      <button @click="clear" type="button" class="btn btn-primary ml-2">Clear</button>
+      <button type="button" class="btn btn-seondary ml-2" @click="hideForm">
+        <i class="fas fa-times-circle"></i>
+      </button>
+    </div>
   </form>
 </template>
 
@@ -50,6 +55,7 @@ import Vue from "vue";
 import VeeValidate from "vee-validate";
 import spacetime from "spacetime";
 import { books } from "@/config/firebase";
+import EventBus from "@/config/EventBus";
 
 Vue.use(VeeValidate, {
   events: ""
@@ -71,6 +77,9 @@ export default {
       this.bookTitle = "";
       this.bookPublisher = "";
       this.bookAuthor = "";
+    },
+    hideForm() {
+      EventBus.$emit("hide-add-book-form");
     },
     async saveBook() {
       try {
