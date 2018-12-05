@@ -28,10 +28,12 @@
       <div slot="emptystate">There are no Books record.</div>
       <template slot="table-row" slot-scope="props">
         <span v-if="props.column.field == 'after'">
-          <button type="button" class="btn btn-seondary ml-2">
-            <i class="fas fa-book-open"></i>
-            Show Info
-          </button>
+          <router-link :to="{ name: 'manage.book', params: { isbn: props.row.isbn } }">
+            <button type="button" class="btn btn-seondary ml-2">
+              <i class="fas fa-book-open"></i>
+              Show Info
+            </button>
+          </router-link>
         </span>
         <span v-else>{{props.formattedRow[props.column.field]}}</span>
       </template>

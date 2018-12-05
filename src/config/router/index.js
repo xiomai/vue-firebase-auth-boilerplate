@@ -7,6 +7,7 @@ const Logout = () => import(/* webpackChunkName: "public-routes" */ '@/component
 const Login = () => import(/* webpackChunkName: "public-routes" */ '@/components/views/Login')
 const Home = () => import(/* webpackChunkName: "authenticated-routes" */ '@/components/views/Home')
 const Books = () => import(/* webpackChunkName: "authenticated-routes" */ '@/components/views/Books')
+const Book = () => import(/* webpackChunkName: "authenticated-routes" */ '@/components/views/Book')
 const Students = () => import(/* webpackChunkName: "authenticated-routes" */ '@/components/views/Students')
 const Account = () => import(/* webpackChunkName: "authenticated-routes" */ '@/components/views/Account')
 const ManageUsers = () => import(/* webpackChunkName: "superadmin-routes" */ '@/components/views/ManageUsers')
@@ -26,6 +27,12 @@ const router = new Router({
       path: '/manage/books',
       name: 'manage.books',
       component: Books,
+      beforeEnter: Middleware.siteAdmin
+    },
+    {
+      path: '/manage/books/:isbn',
+      name: 'manage.book',
+      component: Book,
       beforeEnter: Middleware.siteAdmin
     },
     {
