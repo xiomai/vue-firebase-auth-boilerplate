@@ -36,6 +36,25 @@
           ".validate": false
         }
       }
+    },
+    "students": {
+      ".read": "auth != null && root.child('roles').child(auth.uid).exists() && (root.child('roles').child(auth.uid).val() == 'superadmin' || root.child('roles').child(auth.uid).val() == 'admin')",
+      "$icno": {
+        ".write": "auth != null && !data.exists() && root.child('roles').child(auth.uid).exists() && (root.child('roles').child(auth.uid).val() == 'superadmin' || root.child('roles').child(auth.uid).val() == 'admin')",
+        ".validate": "newData.hasChildren(['name', 'course', 'added_at'])",
+        "name": {
+          ".validate": "newData.isString()"
+        },
+        "course": {
+          ".validate": "newData.isString()"
+        },
+        "added_at": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
     }
   }
 }

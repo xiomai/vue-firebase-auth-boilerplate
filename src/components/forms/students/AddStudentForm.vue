@@ -1,59 +1,52 @@
 <template>
   <form @submit.prevent="validateBeforeSubmit">
     <fieldset>
-      <legend>Add Book Form</legend>
+      <legend>Add Student Form</legend>
       <div class="form-group">
-        <label for="isbn">ISBN</label>
+        <label for="icno">IC Number</label>
         <input
           type="text"
           class="form-control"
-          placeholder="ISBN"
-          id="isbn"
-          name="isbn"
-          v-validate="'required|numeric|min:10|max:13'"
-          v-model="isbn"
+          placeholder="IC Number"
+          id="icno"
+          name="icno"
+          v-validate="'required|numeric|length:8'"
+          v-model="icno"
         >
       </div>
       <div class="form-group">
-        <label for="bookTitle">Book Title</label>
+        <label for="name">Student Name</label>
         <input
           type="text"
           class="form-control"
-          placeholder="Book Title"
-          id="bookTitle"
-          name="bookTitle"
-          v-validate="'required'"
-          v-model="bookTitle"
+          placeholder="Student Name"
+          id="name"
+          name="name"
+          v-validate="'required|alpha_spaces'"
+          v-model="name"
         >
       </div>
       <div class="form-group">
-        <label for="publisher">Publisher</label>
+        <label for="course">Course</label>
         <input
           type="text"
-          id="publisher"
+          id="course"
+          name="course"
           class="form-control"
-          placeholder="Publisher"
-          v-model="bookPublisher"
-        >
-      </div>
-      <div class="form-group">
-        <label for="author">Author</label>
-        <input
-          type="text"
-          id="author"
-          class="form-control"
-          placeholder="Author"
-          v-model="bookAuthor"
+          placeholder="Course"
+          v-model="course"
+          v-validate="'required|alpha_spaces'"
         >
       </div>
     </fieldset>
     <div class="alert alert-danger error mb-3" v-show="errors.any()">
-      <div v-if="errors.has('isbn')">{{ errors.first('isbn') }}</div>
-      <div v-if="errors.has('bookTitle')">{{ errors.first('bookTitle') }}</div>
+      <div v-if="errors.has('icno')">{{ errors.first('icno') }}</div>
+      <div v-if="errors.has('name')">{{ errors.first('name') }}</div>
+      <div v-if="errors.has('course')">{{ errors.first('course') }}</div>
       <div v-if="errors.has('custom_errors')">{{ errors.first('custom_errors') }}</div>
     </div>
     <div class="d-flex justify-content-between col-sm-12">
-      <button type="submit" class="btn btn-primary">Save Book</button>
+      <button type="submit" class="btn btn-primary">Add Student</button>
       <button @click="clear" type="button" class="btn btn-primary ml-2">Clear</button>
       <button type="button" class="btn btn-seondary ml-2" @click="hideForm">
         <i class="fas fa-times-circle"></i>
@@ -66,7 +59,7 @@
 import Vue from "vue";
 import VeeValidate from "vee-validate";
 import spacetime from "spacetime";
-import { books } from "@/config/firebase";
+import { students } from "@/config/firebase";
 import EventBus from "@/config/EventBus";
 
 Vue.use(VeeValidate, {
@@ -74,43 +67,40 @@ Vue.use(VeeValidate, {
 });
 
 export default {
-  name: "AddBookForm",
+  name: "AddStudentForm",
   data() {
     return {
-      isbn: "",
-      bookTitle: "",
-      bookPublisher: "",
-      bookAuthor: ""
+      icno: "",
+      name: "",
+      course: ""
     };
   },
   methods: {
     clear() {
-      this.isbn = "";
-      this.bookTitle = "";
-      this.bookPublisher = "";
-      this.bookAuthor = "";
+      this.icno = "";
+      this.name = "";
+      this.course = "";
       this.$validator.reset();
     },
     hideForm() {
-      EventBus.$emit("hide-add-book-form");
+      EventBus.$emit("hide-add-student-form");
     },
-    async saveBook() {
+    async addStudent() {
       try {
         const params = {
-          isbn: this.isbn,
-          title: this.bookTitle,
-          publisher: this.bookPublisher,
-          author: this.bookAuthor,
+          icno: this.icno,
+          name: this.name,
+          course: this.course,
           added_at: spacetime.now().epoch
         };
-
-        await books.addBook(params);
+        console.log(params);
+        await students.addStudent(params);
         this.clear();
       } catch (error) {
         if (error) {
           this.$validator.errors.add({
             field: "custom_errors",
-            msg: "Failed to add Book, ISBN may already exist."
+            msg: "Failed to add Student, IC Number may already exist."
           });
         }
         /* eslint-disable-next-line*/
@@ -122,7 +112,7 @@ export default {
         await this.$validator.reset();
         const response = await this.$validator.validateAll();
         if (response) {
-          this.saveBook();
+          this.addStudent();
         }
       } catch (error) {
         /* eslint-disable-next-line*/

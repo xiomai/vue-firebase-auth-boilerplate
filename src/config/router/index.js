@@ -9,6 +9,7 @@ const Home = () => import(/* webpackChunkName: "authenticated-routes" */ '@/comp
 const Books = () => import(/* webpackChunkName: "authenticated-routes" */ '@/components/views/Books')
 const Book = () => import(/* webpackChunkName: "authenticated-routes" */ '@/components/views/Book')
 const Students = () => import(/* webpackChunkName: "authenticated-routes" */ '@/components/views/Students')
+const Student = () => import(/* webpackChunkName: "authenticated-routes" */ '@/components/views/Student')
 const Account = () => import(/* webpackChunkName: "authenticated-routes" */ '@/components/views/Account')
 const ManageUsers = () => import(/* webpackChunkName: "superadmin-routes" */ '@/components/views/ManageUsers')
 
@@ -39,6 +40,12 @@ const router = new Router({
       path: '/manage/students',
       name: 'manage.students',
       component: Students,
+      beforeEnter: Middleware.siteAdmin
+    },
+    {
+      path: '/manage/students/:icno',
+      name: 'manage.student',
+      component: Student,
       beforeEnter: Middleware.siteAdmin
     },
     {
