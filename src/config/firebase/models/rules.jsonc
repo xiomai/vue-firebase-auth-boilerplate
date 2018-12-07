@@ -37,6 +37,38 @@
         }
       }
     },
+    "borrowedBooks": {
+      ".read": "auth != null && root.child('roles/'+auth.uid).exists() && (root.child('roles/'+auth.uid).val() == 'superadmin' || root.child('roles/'+auth.uid).val() == 'admin')",
+      ".write": "auth != null && root.child('roles/'+auth.uid).exists() && (root.child('roles/'+auth.uid).val() == 'superadmin' || root.child('roles/'+auth.uid).val() == 'admin')",
+      "$isbn": {
+        ".validate": "!data.exists() && root.child('books/'+$isbn).exists() && newData.hasChildren(['icno', 'borrowed_at'])",
+        "icno": {
+          ".validate": "newData.isNumber() && root.child('students/'+newData.val()).exists()"
+        },
+        "borrowed_at": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "bookBorrowers": {
+      ".read": "auth != null && root.child('roles/'+auth.uid).exists() && (root.child('roles/'+auth.uid).val() == 'superadmin' || root.child('roles/'+auth.uid).val() == 'admin')",
+      ".write": "auth != null && root.child('roles/'+auth.uid).exists() && (root.child('roles/'+auth.uid).val() == 'superadmin' || root.child('roles/'+auth.uid).val() == 'admin')",
+      "$icno": {
+        ".validate": "root.child('students/'+$icno).exists()",
+        "$isbn": {
+          ".validate": "!data.exists() && newData.hasChildren(['borrowed_at']) && root.child('borrowedBooks/'+$isbn).exists()",
+          "borrowed_at": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false,
+          }
+        }
+      }
+    },
     "students": {
       ".read": "auth != null && root.child('roles').child(auth.uid).exists() && (root.child('roles').child(auth.uid).val() == 'superadmin' || root.child('roles').child(auth.uid).val() == 'admin')",
       "$icno": {

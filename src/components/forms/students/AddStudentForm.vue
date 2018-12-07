@@ -93,7 +93,7 @@ export default {
           course: this.course,
           added_at: spacetime.now().epoch
         };
-        console.log(params);
+
         await students.addStudent(params);
         this.clear();
       } catch (error) {

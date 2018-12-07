@@ -25,7 +25,20 @@
         </p>
       </div>
       <div class="col col-md-6 col-sm-12 alert alert-secondary m-2">
-        <h4 class="text-center">Status</h4>
+        <h4 class="text-center">Borrowed Books</h4>
+        <div v-if="noBorrowedBooks" class="alert alert-light">
+          <strong>No Books Borrowed</strong>
+        </div>
+        <div v-else>
+          <div v-for="(borrowedData, isbn) in booksBorrowed" :key="isbn" class="alert alert-light">
+            <strong>ISBN:</strong>
+            <router-link :to="{ name: 'manage.book', params: { isbn } }">{{isbn}}</router-link>
+
+            <br>
+            <strong>Borrowed at:</strong>
+            {{formatDate(borrowedData.borrowed_at)}}
+          </div>
+        </div>
       </div>
     </div>
     <div v-else class="col col-sm-12 p-4">
@@ -38,14 +51,16 @@
 
 <script>
 import { isEmpty } from "lodash";
-import { students } from "@/config/firebase";
+import spacetime from "spacetime";
+import { students, bookBorrowers } from "@/config/firebase";
 import PageContenHeader from "@/components/PageContentHeader";
 
 export default {
   name: "Student",
   data() {
     return {
-      student: null
+      student: null,
+      booksBorrowed: null
     };
   },
   components: {
@@ -57,16 +72,41 @@ export default {
     },
     isStudentLoaded() {
       return !isEmpty(this.student);
+    },
+    noBorrowedBooks() {
+      return isEmpty(this.booksBorrowed);
+    }
+  },
+  methods: {
+    formatDate(epochTime) {
+      return spacetime(epochTime).format("yyyy.MM.dd h:mm a");
+    },
+    async getStudent() {
+      try {
+        const student = await students.onceGetStudent(this.routeICNO);
+        this.student = student.val();
+      } catch (error) {
+        /* eslint-disable-next-line*/
+        console.log(error.code, error.message);
+      }
+    },
+    async getBooksBorrowed() {
+      const params = {
+        icno: this.routeICNO
+      };
+
+      try {
+        const snapshot = await bookBorrowers.onceGetBookBorrower(params);
+        this.booksBorrowed = snapshot.val();
+      } catch (error) {
+        /* eslint-disable-next-line */
+        console.log(error.code, error.message);
+      }
     }
   },
   async created() {
-    try {
-      const student = await students.onceGetStudent(this.routeICNO);
-      this.student = student.val();
-    } catch (error) {
-      /* eslint-disable-next-line*/
-      console.log(error.code, error.message);
-    }
+    await this.getStudent();
+    await this.getBooksBorrowed();
   }
 };
 </script>

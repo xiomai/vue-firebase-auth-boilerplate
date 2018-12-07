@@ -97,6 +97,7 @@ export default {
     this.fetchUsers();
   },
   beforeDestroy() {
+    EventBus.$off(["cancel-edit-mode"]);
     this.$store.commit("clearUsers");
   },
   mounted() {
