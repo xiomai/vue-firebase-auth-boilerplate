@@ -10,27 +10,7 @@
         </div>
       </div>
       <div v-show="viewForm" class="col col-md-4 col-sm-12 mt-2">
-        <div class="card border-secondary">
-          <div class="card-header">Recently Added Books</div>
-          <div class="card-body p-0">
-            <ul class="list-group">
-              <li
-                :key="book.key"
-                v-for="book in recentBooks"
-                class="list-group-item d-flex justify-content-between align-items-center mx-0"
-              >
-                {{book.title}}
-                <span class="badge badge-primary badge-pill">ISBN: {{book.key}}</span>
-              </li>
-              <li
-                v-if="!recentBooks.length"
-                class="list-group-item d-flex justify-content-between align-items-center"
-              >
-                <span class="badge badge-warning badge-pill">No Books added yet.</span>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <RecentAddedBooks :recentBooks="recentBooks"/>
       </div>
     </div>
     <div class="col-sm-12 my-5">
@@ -45,6 +25,7 @@ import { books } from "@/config/firebase";
 import PageContenHeader from "@/components/PageContentHeader";
 import AddBookForm from "@/components/forms/books/AddBookForm";
 import BooksTable from "@/components/table/BooksTable";
+import RecentAddedBooks from "@/components/views/templates/books/RecentAddedBooks";
 import EventBus from "@/config/EventBus";
 
 export default {
@@ -52,7 +33,8 @@ export default {
   components: {
     PageContenHeader,
     AddBookForm,
-    BooksTable
+    BooksTable,
+    RecentAddedBooks
   },
   data() {
     return {
